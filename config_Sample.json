@@ -1,0 +1,48 @@
+{
+  "config_name": "Sample",
+  "case_insensitive": true,
+  "replacements": [
+    {
+      "original": "CompanyName Inc.",
+      "replacement": "COMPANY_ANONYMOUS"
+    },
+    {
+      "original": "john.doe@company.com",
+      "replacement": "user1@example.com"
+    },
+    {
+      "original": "table_production_data",
+      "replacement": "table_generic_data"
+    },
+    {
+      "original": "api_key_12345",
+      "replacement": "API_KEY_HIDDEN"
+    },
+    {
+      "original": "database_server_production",
+      "replacement": "database_server_generic"
+    },
+    {
+      "original": "192.168.1.100",
+      "replacement": "192.168.1.XXX"
+    },
+    {
+      "original": "sensitive_project_name",
+      "replacement": "PROJECT_ANONYMOUS"
+    },
+    {
+      "original": "client_secret_xyz789",
+      "replacement": "CLIENT_SECRET_HIDDEN"
+    },
+    {
+      "original": "David",
+      "replacement": "Lucas"
+    },
+    {
+      "original": "Microsoft",
+      "replacement": "TECH_COMPANY"
+    }
+  ],
+  "created_date": "2024-01-15",
+  "last_modified": "2024-01-15"
+} 
