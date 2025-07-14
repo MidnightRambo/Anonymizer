@@ -13,6 +13,8 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 
+CONFIGS_DIR = os.path.join(os.getcwd(), "configs")
+os.makedirs(CONFIGS_DIR, exist_ok=True)
 
 class TextAnonymizer(QMainWindow):
     def __init__(self):
@@ -238,8 +240,8 @@ class TextAnonymizer(QMainWindow):
         
     def load_config_list(self):
         """Load all available configuration files"""
-        config_files = glob.glob("config_*.json")
-        config_names = [f.replace("config_", "").replace(".json", "") for f in config_files]
+        config_files = glob.glob(os.path.join(CONFIGS_DIR, "config_*.json"))
+        config_names = [os.path.basename(f).replace("config_", "").replace(".json", "") for f in config_files]
         
         self.config_combo.clear()
         self.config_combo.addItems(config_names)
@@ -255,7 +257,7 @@ class TextAnonymizer(QMainWindow):
             
     def load_config_by_name(self, config_name):
         """Load configuration by name"""
-        filename = f"config_{config_name}.json"
+        filename = os.path.join(CONFIGS_DIR, f"config_{config_name}.json")
         if os.path.exists(filename):
             try:
                 with open(filename, 'r') as f:
@@ -392,25 +394,35 @@ class TextAnonymizer(QMainWindow):
         self.refresh_rules_table()
         
     def load_config(self):
-        """Load configuration from file"""
+        """Load configuration from file in the 'configs' folder"""
+        # Ensure the configs folder path is correct
+        configs_dir = os.path.join(os.getcwd(), "configs")
+        if not os.path.isdir(configs_dir):
+            # Optionally, create it or warn the user
+            os.makedirs(configs_dir, exist_ok=True)
+
+        # Open file dialog rooted at configs_dir
         filename, _ = QFileDialog.getOpenFileName(
-            self, "Load Configuration", "", "JSON files (*.json)"
+            self,
+            "Load Configuration",
+            configs_dir,
+            "JSON files (*.json)"
         )
         if filename:
             try:
                 with open(filename, 'r') as f:
                     self.current_config = json.load(f)
                     self.config_name_entry.setText(self.current_config['config_name'])
-                    
-                    # Handle case insensitive option (backward compatibility)
+
+                    # Handle case-insensitive option (backward compatibility)
                     case_insensitive = self.current_config.get('case_insensitive', False)
                     self.case_insensitive_checkbox.setChecked(case_insensitive)
-                    
+
                     self.refresh_rules_table()
                     self.load_config_list()
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"Failed to load configuration: {str(e)}")
-                
+                    
     def save_config(self):
         """Save current configuration to file"""
         config_name = self.config_name_entry.text().strip()
@@ -422,7 +434,7 @@ class TextAnonymizer(QMainWindow):
         self.current_config['case_insensitive'] = self.case_insensitive_checkbox.isChecked()
         self.current_config['last_modified'] = datetime.now().strftime("%Y-%m-%d")
         
-        filename = f"config_{config_name}.json"
+        filename = os.path.join(CONFIGS_DIR, f"config_{config_name}.json")
         try:
             with open(filename, 'w') as f:
                 json.dump(self.current_config, f, indent=2)
@@ -445,7 +457,7 @@ class TextAnonymizer(QMainWindow):
         )
         
         if reply == QMessageBox.Yes:
-            filename = f"config_{selected_config}.json"
+            filename = os.path.join(CONFIGS_DIR, f"config_{selected_config}.json")
             try:
                 os.remove(filename)
                 QMessageBox.information(self, "Success", f"Configuration '{selected_config}' deleted.")
