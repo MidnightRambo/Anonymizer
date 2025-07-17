@@ -156,6 +156,7 @@ class TextAnonymizer(QMainWindow):
             "config_name": "Default",
             "replacements": [],
             "case_insensitive": False,
+            "whole_words_only": True,
             "created_date": datetime.now().strftime("%Y-%m-%d"),
             "last_modified": datetime.now().strftime("%Y-%m-%d")
         }
@@ -479,10 +480,24 @@ class TextAnonymizer(QMainWindow):
         config_card.layout.addWidget(self.config_name_entry)
         
         # Case mode combo (Case sensitive / Case insensitive)
+        case_label = QLabel("Case Sensitivity:")
+        case_label.setStyleSheet("background: transparent; border: none;")
+        config_card.layout.addWidget(case_label)
+        
         self.case_mode_combo = QComboBox()
         self.case_mode_combo.addItems(["Case sensitive", "Case insensitive"])
         self.case_mode_combo.setToolTip("Choose how replacements handle letter casing")
         config_card.layout.addWidget(self.case_mode_combo)
+        
+        # Word boundary mode combo (Whole words only / Replace anywhere)
+        word_boundary_label = QLabel("Word Boundaries:")
+        word_boundary_label.setStyleSheet("background: transparent; border: none;")
+        config_card.layout.addWidget(word_boundary_label)
+        
+        self.word_boundary_combo = QComboBox()
+        self.word_boundary_combo.addItems(["Whole words only", "Replace anywhere"])
+        self.word_boundary_combo.setToolTip("Choose whether to replace only whole words or text anywhere including inside words")
+        config_card.layout.addWidget(self.word_boundary_combo)
         
         right_layout.addWidget(config_card)
         
@@ -679,6 +694,10 @@ class TextAnonymizer(QMainWindow):
                     case_insensitive = self.current_config.get('case_insensitive', False)
                     self.case_mode_combo.setCurrentIndex(1 if case_insensitive else 0)
                     
+                    # Handle word boundary option (backward compatibility)
+                    whole_words_only = self.current_config.get('whole_words_only', True)
+                    self.word_boundary_combo.setCurrentIndex(0 if whole_words_only else 1)
+                    
                     self.refresh_rules_table()
             except Exception as e:
                 self.show_error(f"Failed to load configuration: {str(e)}")
@@ -802,11 +821,13 @@ class TextAnonymizer(QMainWindow):
             "config_name": "New_Config",
             "replacements": [],
             "case_insensitive": False,
+            "whole_words_only": True,
             "created_date": datetime.now().strftime("%Y-%m-%d"),
             "last_modified": datetime.now().strftime("%Y-%m-%d")
         }
         self.config_name_entry.setText("New_Config")
         self.case_mode_combo.setCurrentIndex(0) # Default to case sensitive
+        self.word_boundary_combo.setCurrentIndex(0) # Default to whole words only
         self.refresh_rules_table()
         
     def load_config(self):
@@ -844,6 +865,7 @@ class TextAnonymizer(QMainWindow):
             
         self.current_config['config_name'] = config_name
         self.current_config['case_insensitive'] = (self.case_mode_combo.currentIndex() == 1)
+        self.current_config['whole_words_only'] = (self.word_boundary_combo.currentIndex() == 0)
         self.current_config['last_modified'] = datetime.now().strftime("%Y-%m-%d")
         
         filename = os.path.join(CONFIGS_DIR, f"config_{config_name}.json")
@@ -891,6 +913,7 @@ class TextAnonymizer(QMainWindow):
         # Apply replacements
         anonymized_text = text
         case_insensitive = (self.case_mode_combo.currentIndex() == 1)
+        whole_words_only = (self.word_boundary_combo.currentIndex() == 0)
         
         for rule in self.current_config['replacements']:
             original = rule['original']
@@ -902,12 +925,25 @@ class TextAnonymizer(QMainWindow):
                     matched_text = match.group(0)
                     return self.preserve_case_pattern(matched_text, replacement)
                 
-                # Create regex pattern that matches whole words to avoid partial matches
-                pattern = r'\b' + re.escape(original) + r'\b'
+                # Create regex pattern based on word boundary setting
+                if whole_words_only:
+                    pattern = r'\b' + re.escape(original) + r'\b'
+                else:
+                    pattern = re.escape(original)
+                    
                 anonymized_text = re.sub(pattern, replace_func, anonymized_text, flags=re.IGNORECASE)
             else:
-                # Standard case-sensitive replacement
-                anonymized_text = anonymized_text.replace(original, replacement)
+                # For case-sensitive replacement, we need to handle word boundaries manually
+                if whole_words_only:
+                    # Use regex to match whole words only
+                    def replace_case_sensitive(match):
+                        return replacement
+                    
+                    pattern = r'\b' + re.escape(original) + r'\b'
+                    anonymized_text = re.sub(pattern, replace_case_sensitive, anonymized_text)
+                else:
+                    # Standard case-sensitive replacement anywhere
+                    anonymized_text = anonymized_text.replace(original, replacement)
             
         # Update text area
         self.text_area.setPlainText(anonymized_text)
@@ -923,6 +959,7 @@ class TextAnonymizer(QMainWindow):
         # Apply reverse replacements
         deanonymized_text = text
         case_insensitive = (self.case_mode_combo.currentIndex() == 1)
+        whole_words_only = (self.word_boundary_combo.currentIndex() == 0)
         
         for rule in reversed(self.current_config['replacements']):
             original = rule['original']
@@ -934,12 +971,25 @@ class TextAnonymizer(QMainWindow):
                     matched_text = match.group(0)
                     return self.preserve_case_pattern(matched_text, original)
                 
-                # Create regex pattern that matches whole words to avoid partial matches
-                pattern = r'\b' + re.escape(replacement) + r'\b'
+                # Create regex pattern based on word boundary setting
+                if whole_words_only:
+                    pattern = r'\b' + re.escape(replacement) + r'\b'
+                else:
+                    pattern = re.escape(replacement)
+                    
                 deanonymized_text = re.sub(pattern, replace_func, deanonymized_text, flags=re.IGNORECASE)
             else:
-                # Standard case-sensitive replacement
-                deanonymized_text = deanonymized_text.replace(replacement, original)
+                # For case-sensitive replacement, we need to handle word boundaries manually
+                if whole_words_only:
+                    # Use regex to match whole words only
+                    def replace_case_sensitive(match):
+                        return original
+                    
+                    pattern = r'\b' + re.escape(replacement) + r'\b'
+                    deanonymized_text = re.sub(pattern, replace_case_sensitive, deanonymized_text)
+                else:
+                    # Standard case-sensitive replacement anywhere
+                    deanonymized_text = deanonymized_text.replace(replacement, original)
             
         # Update text area
         self.text_area.setPlainText(deanonymized_text)
