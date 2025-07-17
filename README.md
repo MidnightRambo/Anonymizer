@@ -4,9 +4,10 @@ A Python-based desktop application with GUI that enables users to anonymize sens
 
 ## Features
 
-- **Intuitive GUI**: Clean, user-friendly interface built with PyQt5
+- **Intuitive GUI**: Clean, user-friendly interface built with PyQt6
 - **Text Processing**: Preserve formatting while anonymizing/de-anonymizing text
 - **Case-Insensitive Matching**: Optional case-insensitive replacement with case pattern preservation
+- **Word-Boundary Control**: Choose whether to replace only whole words or also text inside other words
 - **Configuration Management**: Save/load multiple anonymization configurations
 - **Reversible Operations**: Ensure perfect de-anonymization of processed text
 - **Clipboard Integration**: Easy copy/paste functionality
@@ -102,6 +103,7 @@ Configurations are stored as JSON files with the following structure:
 {
   "config_name": "Sample",
   "case_insensitive": true,
+  "whole_words_only": false,
   "replacements": [
     {
       "original": "CompanyName Inc.",
@@ -217,7 +219,8 @@ LuCaS attended the TECH_COMPANY conference.
 ### Right Panel - Configuration Management
 - **Configuration Dropdown**: Select from existing configurations
 - **Configuration Name Field**: Name for the current configuration
-- **Case Insensitive Checkbox**: Enable case-insensitive matching with case preservation
+- **Case Sensitivity Dropdown**: Select case-sensitive or case-insensitive matching (with case preservation)
+- **Word Boundaries Dropdown**: Select whole-word replacement only or allow matches inside words
 - **Replacement Rules Table**: View and manage replacement rules
 - **Rule Editor**: Add/edit individual replacement rules
 - **Configuration Buttons**: New, Load, Save, Delete configurations
@@ -267,7 +270,7 @@ text-anonymizer/
 
 ## Dependencies
 
-- **PyQt5**: Modern GUI framework for cross-platform applications
+- **PyQt6**: Modern GUI framework for cross-platform applications
 - **pyperclip**: For clipboard operations
 - **json**: JSON handling (built into Python)
 - **glob**: File pattern matching (built into Python)
