@@ -1,10 +1,92 @@
 # Text Anonymization/De-anonymization Tool
 
-A Python-based desktop application with GUI that enables users to anonymize sensitive data in text (code, emails, SQL statements, etc.) before sharing with LLMs, and then de-anonymize the LLM responses.
+A cross-platform desktop application that enables users to anonymize sensitive data in text (code, emails, SQL statements, etc.) before sharing with LLMs, and then de-anonymize the LLM responses.
 
-## Features
+## 🚀 Available Versions
 
-- **Intuitive GUI**: Clean, user-friendly interface built with PyQt6
+This project provides **two implementations**:
+
+### 🦀 **Tauri Version** (Recommended - Active Development)
+- **Location**: [`/tauri`](./tauri/) folder
+- **Technology**: Rust + TypeScript/React + Tauri
+- **Platform**: Cross-platform (Windows, macOS, Linux)
+- **Status**: ✅ **Active development** - All new features and improvements
+- **Performance**: Native performance with modern UI
+- **Installation**: Download pre-built binaries from [Releases](../../releases)
+
+### 🐍 **Python Version** (Legacy - Maintenance Only)
+- **Location**: [`/python`](./python/) folder  
+- **Technology**: Python + PyQt6
+- **Platform**: Cross-platform (requires Python runtime)
+- **Status**: 🔒 **Maintenance only** - No new features planned
+- **Performance**: Good performance, requires Python installation
+- **Installation**: Manual setup with Python environment
+
+> **💡 Recommendation**: Use the **Tauri version** for the best experience, performance, and latest features. The Python version is provided for compatibility and legacy use cases.
+
+## 📥 Quick Start (Tauri Version)
+
+### Option 1: Download Pre-built Binaries (Recommended)
+1. Go to the [Releases](../../releases) page
+2. Download the appropriate file for your OS:
+   - **Windows**: `.exe` or `.msi` installer
+   - **macOS**: `.dmg` installer
+   - **Linux**: `.AppImage` or `.deb` package
+3. Install and run the application
+
+### Option 2: Build from Source
+```bash
+# Clone the repository
+git clone <repository-url>
+cd text-anonymizer
+
+# Navigate to Tauri version
+cd tauri
+
+# Install Node.js dependencies
+npm install
+
+# Install Rust (if not already installed)
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs/ | sh
+
+# Build and run in development mode
+npm run tauri dev
+
+# Or build for production
+npm run tauri build
+```
+
+## 📥 Python Version Setup
+
+If you prefer the Python version, see the detailed setup instructions in [`/python/README.md`](./python/README.md).
+
+<details>
+<summary>Quick Python Setup</summary>
+
+```bash
+# Navigate to Python version
+cd python
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+source venv/bin/activate  # macOS/Linux
+# or
+venv\Scripts\activate     # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the application
+python main.py
+```
+
+</details>
+
+## ✨ Features
+
+- **Intuitive GUI**: Modern, clean interface with excellent UX
 - **Text Processing**: Preserve formatting while anonymizing/de-anonymizing text
 - **Case-Insensitive Matching**: Optional case-insensitive replacement with case pattern preservation
 - **Word-Boundary Control**: Choose whether to replace only whole words or also text inside other words
@@ -12,52 +94,13 @@ A Python-based desktop application with GUI that enables users to anonymize sens
 - **Reversible Operations**: Ensure perfect de-anonymization of processed text
 - **Clipboard Integration**: Easy copy/paste functionality
 - **Cross-platform**: Works on Windows, Linux, and macOS
+- **High Performance**: Native performance (Tauri) or Python runtime performance
 
-## Installation
-
-### Prerequisites
-
-- Python 3.8 or higher
-- pip package manager
-
-### Setup Instructions
-
-1. **Clone or download the project**
-   ```bash
-   git clone <repository-url>
-   cd text-anonymizer
-   ```
-
-2. **Create a virtual environment**
-   ```bash
-   python -m venv venv
-   ```
-
-3. **Activate the virtual environment**
-   - On Windows:
-     ```bash
-     venv\Scripts\activate
-     ```
-   - On macOS/Linux:
-     ```bash
-     source venv/bin/activate
-     ```
-
-4. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-5. **Run the application**
-   ```bash
-   python main.py
-   ```
-
-## Usage
+## 🔧 Usage
 
 ### Basic Workflow
 
-1. **Launch the application** by running `python main.py`
+1. **Launch the application**
 2. **Enter text** in the left panel text area
 3. **Configure replacement rules** in the right panel
 4. **Click "Anonymize"** to replace sensitive data
@@ -119,9 +162,9 @@ Configurations are stored as JSON files with the following structure:
 }
 ```
 
-### Example Use Cases
+## 💡 Example Use Cases
 
-#### Code Anonymization
+### Code Anonymization
 
 **Original Code:**
 ```python
@@ -147,7 +190,7 @@ def connect_to_database():
     return conn
 ```
 
-#### SQL Query Anonymization
+### SQL Query Anonymization
 
 **Original:**
 ```sql
@@ -163,7 +206,7 @@ FROM sample_customers
 WHERE company_name = 'COMPANY_ANONYMOUS';
 ```
 
-#### Email Anonymization
+### Email Anonymization
 
 **Original:**
 ```
@@ -189,108 +232,79 @@ We're having trouble with the API endpoint at https://api.example.com/v1/custome
 The API key API_KEY_HIDDEN doesn't seem to be working.
 ```
 
-#### Case-Insensitive Replacement Example
+## 🏗️ Development & Building
 
-**Original:**
-```
-David works at Microsoft headquarters.
-DAVID also uses MICROSOFT Azure services.
-david prefers microsoft products.
-DaViD attended the MiCrOsOfT conference.
-```
+### GitHub Actions
 
-**Anonymized (with case-insensitive enabled):**
-```
-Lucas works at TECH_COMPANY headquarters.
-LUCAS also uses TECH_COMPANY Azure services.
-lucas prefers TECH_COMPANY products.
-LuCaS attended the TECH_COMPANY conference.
-```
+This repository includes automated building via GitHub Actions:
 
-## GUI Components
+- **Automatic builds** on push to main/master branches
+- **Cross-platform compilation** for Windows (.exe) and macOS (.dmg)
+- **Release automation** when creating GitHub releases
+- **Artifact uploads** for easy access to built binaries
 
-### Left Panel - Text Input/Output
-- **Text Area**: Large, scrollable text field with monospace font
-- **Anonymize Button**: Applies current configuration to replace sensitive data
-- **De-anonymize Button**: Reverses the replacement process
-- **Clear Button**: Clears the text area
-- **Copy to Clipboard Button**: Copies current text to clipboard
+### Manual Building
 
-### Right Panel - Configuration Management
-- **Configuration Dropdown**: Select from existing configurations
-- **Configuration Name Field**: Name for the current configuration
-- **Case Sensitivity Dropdown**: Select case-sensitive or case-insensitive matching (with case preservation)
-- **Word Boundaries Dropdown**: Select whole-word replacement only or allow matches inside words
-- **Replacement Rules Table**: View and manage replacement rules
-- **Rule Editor**: Add/edit individual replacement rules
-- **Configuration Buttons**: New, Load, Save, Delete configurations
+See the respective README files in each version folder:
+- [Tauri Development Guide](./tauri/README.md)
+- [Python Development Guide](./python/README.md)
 
-## Best Practices
-
-1. **Test Your Rules**: Always test anonymization/de-anonymization with sample data
-2. **Order Matters**: Rules are applied in order - be careful with overlapping patterns
-3. **Case-Insensitive Matching**: Enable case-insensitive replacement when you want to match names regardless of capitalization
-4. **Backup Configurations**: Save important configurations to prevent data loss
-5. **Use Descriptive Names**: Give configurations clear, descriptive names
-6. **Review Before Sharing**: Always review anonymized text before sharing
-7. **Formatting Preservation**: The text area preserves tabs, spaces, and code formatting - paste directly from your IDE or documents
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Configuration Not Loading**
-   - Check if the JSON file is properly formatted
-   - Verify the file is in the same directory as main.py
-
-2. **Clipboard Not Working**
-   - Ensure pyperclip is installed: `pip install pyperclip`
-   - On Linux, you may need to install xclip: `sudo apt-get install xclip`
-
-3. **Text Formatting Issues**
-   - The tool preserves all formatting (spaces, tabs, line breaks)
-   - If formatting appears wrong, check your original text
-
-### Error Messages
-
-- **"Both original and replacement text are required"**: Fill in both fields when adding rules
-- **"Rule with this original text already exists"**: Each original text must be unique
-- **"Please select a rule to remove/update"**: Click on a rule in the table first
-
-## File Structure
+## 📁 Project Structure
 
 ```
 text-anonymizer/
-├── main.py                  # Main application file
-├── requirements.txt         # Python dependencies
-├── config_Sample.json       # Sample configuration file
-├── README.md               # This file
-└── venv/                   # Virtual environment (created during setup)
+├── tauri/                   # 🦀 Tauri version (Rust + React)
+│   ├── src/                 # React frontend
+│   ├── src-tauri/           # Rust backend
+│   ├── package.json         # Node.js dependencies
+│   └── README.md            # Tauri-specific documentation
+├── python/                  # 🐍 Python version (PyQt6)
+│   ├── main.py              # Main application file
+│   ├── requirements.txt     # Python dependencies
+│   ├── configs/             # Sample configurations
+│   └── README.md            # Python-specific documentation
+├── .github/workflows/       # 🔄 GitHub Actions CI/CD
+│   └── build.yml            # Build automation
+├── .gitignore               # Git ignore rules
+└── README.md                # This file
 ```
 
-## Dependencies
-
-- **PyQt6**: Modern GUI framework for cross-platform applications
-- **pyperclip**: For clipboard operations
-- **json**: JSON handling (built into Python)
-- **glob**: File pattern matching (built into Python)
-- **datetime**: Date/time handling (built into Python)
-
-## License
-
-This project is open source and available under the MIT License.
-
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
+3. Make your changes to the **Tauri version** (active development)
+4. Test thoroughly on multiple platforms
 5. Submit a pull request
 
-## Support
+> **Note**: New features should be implemented in the Tauri version only. Python version contributions are limited to critical bug fixes.
 
-For issues, questions, or feature requests, please:
-1. Check the troubleshooting section
-2. Review existing issues
-3. Create a new issue with detailed information 
+## 📄 License
+
+This project is open source and available under the MIT License.
+
+## 🆘 Support
+
+For issues, questions, or feature requests:
+
+1. Check the [Issues](../../issues) page for existing reports
+2. Review the troubleshooting sections in version-specific READMEs
+3. Create a new issue with:
+   - Detailed description
+   - Steps to reproduce
+   - System information (OS, version)
+   - Screenshots (if applicable)
+
+## 🎯 Roadmap
+
+### Tauri Version (Active)
+- [ ] Enhanced UI/UX improvements
+- [ ] Plugin system for custom anonymization rules
+- [ ] Cloud configuration sync
+- [ ] Advanced regex pattern support
+- [ ] Batch file processing
+- [ ] CLI interface
+
+### Python Version (Maintenance Only)
+- Critical bug fixes only
+- Security updates 

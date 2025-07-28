@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-dark-bg: #1a1d23;
+  --color-dark-surface: #242732;
+  --color-dark-surfaceHover: #2a2d3a;
+  --color-dark-border: #3a3d4a;
+  --color-dark-borderHover: #4a4d5a;
+  --color-dark-text: #e1e5e9;
+  --color-dark-textSecondary: #a1a5a9;
+  --color-dark-accent: #4a9eff;
+  --color-dark-accentHover: #5aa7ff;
+  --color-dark-success: #4caf50;
+  --color-dark-warning: #ff9800;
+  --color-dark-danger: #ff6b6b;
+  --color-dark-dangerHover: #ff7b7b;
+  
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+@layer base {
+  * {
+    border-color: #3a3d4a;
+  }
+  
+  html {
+    @apply bg-dark-bg text-dark-text;
+  }
+  
+  body {
+    @apply bg-dark-bg text-dark-text font-sans;
+  }
+  
+  #root {
+    @apply min-h-screen bg-dark-bg;
+  }
+}
+
+@layer components {
+  .modern-card {
+    @apply bg-dark-surface border border-dark-border rounded-lg p-2 sm:p-3 shadow-card transition-all duration-200;
+  }
+  
+  .modern-card:hover {
+    @apply border-dark-accent bg-dark-surfaceHover shadow-card-hover;
+  }
+  
+  .modern-button {
+    @apply px-2 py-1 rounded font-medium transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-offset-dark-bg;
+  }
+  
+  .modern-button-primary {
+    @apply px-2 py-1 rounded font-medium transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-offset-dark-bg bg-dark-accent text-white hover:bg-dark-accentHover focus:ring-dark-accent;
+  }
+  
+  .modern-button-secondary {
+    @apply px-2 py-1 rounded font-medium transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-offset-dark-bg bg-dark-surface text-dark-text border border-dark-border hover:bg-dark-surfaceHover hover:border-dark-borderHover focus:ring-dark-border;
+  }
+  
+  .modern-button-danger {
+    @apply px-2 py-1 rounded font-medium transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-offset-dark-bg bg-dark-danger text-white hover:bg-dark-dangerHover focus:ring-dark-danger;
+  }
+  
+  .modern-input {
+    @apply bg-dark-surface border border-dark-border rounded px-2 py-1 text-dark-text placeholder-dark-textSecondary focus:outline-none focus:ring-1 focus:ring-dark-accent focus:border-transparent transition-all duration-200;
+  }
+  
+  .modern-textarea {
+    @apply bg-dark-surface border border-dark-border rounded px-2 py-1 text-dark-text placeholder-dark-textSecondary focus:outline-none focus:ring-1 focus:ring-dark-accent focus:border-transparent transition-all duration-200 font-mono resize-none;
+  }
+  
+  .modern-select {
+    @apply bg-dark-surface border border-dark-border rounded px-2 py-1 text-dark-text placeholder-dark-textSecondary focus:outline-none focus:ring-1 focus:ring-dark-accent focus:border-transparent transition-all duration-200 appearance-none bg-no-repeat bg-right pr-5;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.25rem center;
+    background-size: 1em 1em;
+  }
+  
+  .modern-table {
+    @apply w-full bg-dark-surface border-collapse;
+  }
+  
+  .modern-table th {
+    @apply bg-dark-surfaceHover text-left font-semibold text-dark-text border-b border-dark-border;
+  }
+  
+  .modern-table td {
+    @apply text-dark-text border-b border-dark-border;
+  }
+  
+  .modern-table tr:hover {
+    @apply bg-dark-surfaceHover;
+  }
+  
+  .modern-table tr.selected {
+    @apply bg-dark-accent/20;
+  }
+  
+  /* Sticky header styling for replacement rules table */
+  .modern-table thead.sticky th {
+    @apply bg-dark-surfaceHover shadow-sm;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1d23;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3a3d4a;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4a4d5a;
+}
