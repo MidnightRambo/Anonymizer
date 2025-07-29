@@ -7,7 +7,10 @@ on:
     branches: [ main, master ]
   release:
     types: [published]
-
+    
+permissions:
+  contents: write
+  
 jobs:
   build-tauri:
     strategy:
